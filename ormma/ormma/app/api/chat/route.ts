@@ -4,9 +4,18 @@ export const runtime = "nodejs";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
-// Pick a model at https://openrouter.ai/models (filter by "free").
-// Set OPENROUTER_MODEL in your environment to change it without editing code.
-const DEFAULT_MODEL = "meta-llama/llama-3.3-70b-instruct:free";
+// Models are tried in order until one works. Free models change often, so set
+// OPENROUTER_MODEL in Vercel (one name, or several separated by commas) to override.
+// Browse https://openrouter.ai/models and filter by "free".
+const DEFAULT_MODELS = ["inclusionai/ling-3.1-flash", "upstage/solar-mini4"];
+
+function getModels(): string[] {
+  const fromEnv = (process.env.OPENROUTER_MODEL ?? "")
+    .split(",")
+    .map((m) => m.trim())
+    .filter(Boolean);
+  return fromEnv.length > 0 ? fromEnv : DEFAULT_MODELS;
+}
 
 export async function POST(req: Request) {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -30,34 +39,51 @@ export async function POST(req: Request) {
     return Response.json({ error: "Send at least one user message." }, { status: 400 });
   }
 
-  try {
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: process.env.OPENROUTER_MODEL || DEFAULT_MODEL,
-        max_tokens: 1024,
-        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
-      }),
-    });
+  let lastProblem = "unknown error";
 
-    if (!res.ok) {
-      console.error("OpenRouter error", res.status, await res.text());
-      return Response.json({ error: "Ormma is having trouble right now. Please try again." }, { status: 502 });
+  for (const model of getModels()) {
+    try {
+      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 1024,
+          messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("OpenRouter error", model, res.status, text);
+        let detail = "";
+        try {
+          detail = JSON.parse(text)?.error?.message ?? "";
+        } catch {
+          // ignore parse errors
+        }
+        lastProblem = `${model}: HTTP ${res.status}${detail ? " - " + String(detail).slice(0, 160) : ""}`;
+        continue;
+      }
+
+      const data = await res.json();
+      const reply: string = data?.choices?.[0]?.message?.content ?? "";
+      if (reply.trim()) {
+        return Response.json({ reply });
+      }
+      lastProblem = `${model}: empty reply`;
+    } catch (err) {
+      console.error(err);
+      lastProblem = `${model}: network error`;
     }
-
-    const data = await res.json();
-    const reply: string = data?.choices?.[0]?.message?.content ?? "";
-    if (!reply) {
-      return Response.json({ error: "Ormma had no answer this time. Please try again." }, { status: 502 });
-    }
-
-    return Response.json({ reply });
-  } catch (err) {
-    console.error(err);
-    return Response.json({ error: "Ormma is having trouble right now. Please try again." }, { status: 500 });
   }
+
+  // The reason is safe to show (no secrets) and makes problems easy to diagnose.
+  return Response.json(
+    { error: `Ormma is having trouble right now. Please try again. (${lastProblem})` },
+    { status: 502 }
+  );
 }
