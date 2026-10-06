@@ -1,17 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap");
 
 :root {
-  --green: #1f7a4d;
-  --green-deep: #0f4a2f;
-  --green-soft: #e6f2ea;
-  --gold: #e8b23a;
-  --gold-soft: #fbf0d3;
-  --cream: #fbf7ec;
-  --card: #ffffff;
-  --text: #1c2a22;
-  --muted: #66756c;
-  --line: #e9e2cd;
-  --shadow: 0 6px 24px rgba(15, 74, 47, 0.12);
+  color-scheme: dark;
+  --bg: #050816;
+  --neon: #29b6ff;
+  --neon-2: #6a5cff;
+  --neon-3: #00f0ff;
+  --glass: rgba(255, 255, 255, 0.07);
+  --glass-strong: rgba(255, 255, 255, 0.12);
+  --glass-line: rgba(140, 200, 255, 0.28);
+  --text: #eaf4ff;
+  --muted: #9db4d3;
+  --glow: 0 0 14px rgba(41, 182, 255, 0.55), 0 0 36px rgba(41, 182, 255, 0.25);
+  --glow-soft: 0 0 18px rgba(41, 182, 255, 0.28);
 }
 
 * {
@@ -24,29 +25,42 @@ body {
   height: 100%;
   color: var(--text);
   font-family: "Noto Sans Malayalam", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+}
+
+/* Glowing blue backdrop */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
   background:
-    radial-gradient(1200px 500px at 10% -10%, #d7ecde 0%, transparent 60%),
-    radial-gradient(900px 500px at 100% 0%, #f8e7b8 0%, transparent 55%),
-    var(--cream);
+    radial-gradient(700px 420px at 12% 8%, rgba(41, 182, 255, 0.35), transparent 62%),
+    radial-gradient(640px 460px at 92% 18%, rgba(106, 92, 255, 0.32), transparent 60%),
+    radial-gradient(760px 520px at 55% 105%, rgba(0, 240, 255, 0.22), transparent 62%),
+    var(--bg);
 }
 
 .shell {
   height: 100dvh;
   display: flex;
   justify-content: center;
-  padding: 0;
+  padding: 14px;
 }
 
 .app {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 760px;
-  height: 100dvh;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(6px);
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
+  max-width: 780px;
+  height: calc(100dvh - 28px);
+  overflow: hidden;
+  background: var(--glass);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid var(--glass-line);
+  border-radius: 26px;
+  box-shadow: var(--glow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 /* Header */
@@ -56,8 +70,7 @@ body {
   justify-content: space-between;
   gap: 12px;
   padding: 14px 16px;
-  background: linear-gradient(135deg, var(--green-deep), var(--green));
-  color: #fff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
 }
 
 .brand {
@@ -70,14 +83,15 @@ body {
   margin: 0;
   font-family: Poppins, "Noto Sans Malayalam", sans-serif;
   font-size: 1.2rem;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
+  text-shadow: 0 0 12px rgba(41, 182, 255, 0.8);
 }
 
 .brand p {
   margin: 0;
   font-size: 0.78rem;
-  color: var(--gold-soft);
-  opacity: 0.95;
+  color: var(--neon-3);
+  opacity: 0.9;
 }
 
 .logo {
@@ -88,37 +102,33 @@ body {
   place-items: center;
   font-weight: 700;
   font-size: 1.3rem;
-  color: var(--green-deep);
-  background: radial-gradient(circle at 30% 30%, #ffe08a, var(--gold));
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+  color: #fff;
+  background: linear-gradient(135deg, var(--neon), var(--neon-2));
+  box-shadow: var(--glow);
 }
 
 .ghost {
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  border: 1px solid var(--glass-line);
+  background: var(--glass);
+  color: var(--text);
   border-radius: 999px;
   padding: 7px 14px;
   font-size: 0.85rem;
   cursor: pointer;
   font-family: inherit;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .ghost:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--glass-strong);
+  box-shadow: var(--glow-soft);
 }
 
-/* Kasavu-style gold border strip */
+/* Neon divider line */
 .kasavu {
-  height: 8px;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      var(--gold) 0 14px,
-      #fff4cf 14px 18px,
-      var(--green) 18px 22px,
-      #fff4cf 22px 26px
-    );
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon), var(--neon-3), var(--neon-2), transparent);
+  box-shadow: 0 0 14px var(--neon);
 }
 
 /* Chat area */
@@ -130,6 +140,15 @@ body {
   flex-direction: column;
   gap: 12px;
   scroll-behavior: smooth;
+}
+
+.chat::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+  background: rgba(41, 182, 255, 0.35);
+  border-radius: 8px;
 }
 
 .row {
@@ -152,8 +171,9 @@ body {
   place-items: center;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--green-deep);
-  background: radial-gradient(circle at 30% 30%, #ffe08a, var(--gold));
+  color: #fff;
+  background: linear-gradient(135deg, var(--neon), var(--neon-2));
+  box-shadow: 0 0 12px rgba(41, 182, 255, 0.6);
 }
 
 .bubble {
@@ -162,19 +182,23 @@ body {
   border-radius: 18px;
   line-height: 1.6;
   word-break: break-word;
-  box-shadow: 0 2px 8px rgba(15, 74, 47, 0.06);
 }
 
 .bubble.assistant {
-  background: var(--card);
-  border: 1px solid var(--line);
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
   border-bottom-left-radius: 6px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .bubble.user {
   color: #fff;
-  background: linear-gradient(135deg, var(--green), var(--green-deep));
+  background: linear-gradient(135deg, rgba(41, 182, 255, 0.85), rgba(106, 92, 255, 0.85));
+  border: 1px solid rgba(160, 220, 255, 0.55);
   border-bottom-right-radius: 6px;
+  box-shadow: var(--glow);
 }
 
 .text p {
@@ -197,11 +221,19 @@ body {
   margin-bottom: 4px;
 }
 
+.text strong {
+  color: var(--neon-3);
+}
+
+.bubble.user .text strong {
+  color: #fff;
+}
+
 .speak {
   margin-top: 8px;
-  border: none;
-  background: var(--green-soft);
-  color: var(--green-deep);
+  border: 1px solid var(--glass-line);
+  background: rgba(41, 182, 255, 0.12);
+  color: var(--neon-3);
   border-radius: 999px;
   padding: 4px 11px;
   font-size: 0.78rem;
@@ -210,7 +242,8 @@ body {
 }
 
 .speak:hover {
-  background: #d3e9dc;
+  background: rgba(41, 182, 255, 0.24);
+  box-shadow: var(--glow-soft);
 }
 
 /* Suggestion chips */
@@ -222,20 +255,23 @@ body {
 }
 
 .chip {
-  border: 1px solid var(--gold);
-  background: var(--gold-soft);
-  color: var(--green-deep);
+  border: 1px solid var(--glass-line);
+  background: var(--glass);
+  color: var(--text);
   border-radius: 999px;
   padding: 8px 14px;
   font-size: 0.88rem;
   cursor: pointer;
   font-family: inherit;
-  transition: transform 0.15s ease, background 0.15s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .chip:hover {
-  background: #f8e4a6;
   transform: translateY(-1px);
+  border-color: var(--neon);
+  box-shadow: var(--glow-soft);
 }
 
 /* Typing dots */
@@ -249,7 +285,8 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--neon-3);
+  box-shadow: 0 0 8px var(--neon-3);
   opacity: 0.4;
   animation: bounce 1.1s infinite ease-in-out;
 }
@@ -269,10 +306,18 @@ body {
   gap: 8px;
   margin: 8px 12px 14px;
   padding: 8px;
-  background: var(--card);
-  border: 1px solid var(--line);
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
   border-radius: 999px;
-  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--glow-soft);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.composer:focus-within {
+  border-color: var(--neon);
+  box-shadow: var(--glow);
 }
 
 .composer input {
@@ -287,6 +332,10 @@ body {
   font-family: inherit;
 }
 
+.composer input::placeholder {
+  color: var(--muted);
+}
+
 .composer button {
   border: none;
   cursor: pointer;
@@ -297,12 +346,13 @@ body {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: var(--gold-soft);
+  background: rgba(41, 182, 255, 0.16);
+  border: 1px solid var(--glass-line) !important;
   font-size: 1.1rem;
 }
 
 .mic.on {
-  background: #d9534f;
+  background: #ff3d6e;
   animation: pulse 1.2s infinite;
 }
 
@@ -312,11 +362,13 @@ body {
   border-radius: 999px;
   color: #fff;
   font-size: 0.95rem;
-  background: linear-gradient(135deg, var(--green), var(--green-deep));
+  background: linear-gradient(135deg, var(--neon), var(--neon-2));
+  box-shadow: var(--glow);
 }
 
 .send:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -347,14 +399,23 @@ body {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(217, 83, 79, 0.5);
+    box-shadow: 0 0 0 0 rgba(255, 61, 110, 0.6);
   }
   100% {
-    box-shadow: 0 0 0 12px rgba(217, 83, 79, 0);
+    box-shadow: 0 0 0 12px rgba(255, 61, 110, 0);
   }
 }
 
 @media (max-width: 520px) {
+  .shell {
+    padding: 0;
+  }
+  .app {
+    height: 100dvh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
   .bubble {
     max-width: 86%;
   }
