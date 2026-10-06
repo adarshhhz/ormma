@@ -4,16 +4,29 @@ import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
+// Ormma logo mark: a glowing ring with a four-point spark.
+function LogoMark() {
+  return (
+    <svg viewBox="0 0 32 32" width="100%" height="100%" fill="none" aria-hidden="true">
+      <circle cx="16" cy="16" r="10.5" stroke="currentColor" strokeWidth="2.6" />
+      <path
+        d="M16 9.5 L17.7 14.3 L22.5 16 L17.7 17.7 L16 22.5 L14.3 17.7 L9.5 16 L14.3 14.3 Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 const GREETING: Msg = {
   role: "assistant",
-  content: "Namaskaram! I'm Ormma, Kerala's own AI. How can I help you today?",
+  content: "Hi, I'm Ormma. How can I help you today?",
 };
 
 const SUGGESTIONS = [
-  "Kannur-ൽ നല്ല ബിരിയാണി എവിടെ കിട്ടും?",
-  "Driving licence engane apply cheyyam?",
-  "Kerala-yile best monsoon places parayamo?",
-  "Oru nalla Onam sadya menu venam",
+  "Explain something complicated in simple words",
+  "Help me write a polite email",
+  "Plan a healthy meal for the week",
+  "Give me ideas for a small business",
 ];
 
 // Turns **bold** into <strong> inside a line of text.
@@ -126,7 +139,7 @@ export default function Home() {
       return;
     }
     const rec = new SR();
-    rec.lang = "ml-IN";
+    rec.lang = "en-IN";
     rec.interimResults = false;
     rec.onstart = () => setListening(true);
     rec.onend = () => setListening(false);
@@ -143,7 +156,7 @@ export default function Home() {
     if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text.replace(/\*\*/g, ""));
-    u.lang = "ml-IN";
+    u.lang = "en-IN";
     u.rate = 1.05;
     window.speechSynthesis.speak(u);
   }
@@ -155,10 +168,12 @@ export default function Home() {
       <main className="app">
         <header className="header">
           <div className="brand">
-            <div className="logo" aria-hidden="true">ഓ</div>
+            <div className="logo" aria-hidden="true">
+              <LogoMark />
+            </div>
             <div>
               <h1>Ormma</h1>
-              <p>Kerala&apos;s Own AI</p>
+              <p>Your AI assistant</p>
             </div>
           </div>
           <button className="ghost" onClick={newChat} aria-label="Start a new chat">
@@ -170,7 +185,11 @@ export default function Home() {
         <section className="chat">
           {messages.map((m, i) => (
             <div key={i} className={`row ${m.role}`}>
-              {m.role === "assistant" && <div className="avatar" aria-hidden="true">ഓ</div>}
+              {m.role === "assistant" && (
+                <div className="avatar" aria-hidden="true">
+                  <LogoMark />
+                </div>
+              )}
               <div className={`bubble ${m.role}`}>
                 <div className="text">{renderText(m.content)}</div>
                 {m.role === "assistant" && i > 0 && (
@@ -194,7 +213,9 @@ export default function Home() {
 
           {loading && (
             <div className="row assistant">
-              <div className="avatar" aria-hidden="true">ഓ</div>
+              <div className="avatar" aria-hidden="true">
+                <LogoMark />
+              </div>
               <div className="bubble assistant typing" aria-label="Ormma is typing">
                 <span className="dot" />
                 <span className="dot" />
@@ -217,7 +238,7 @@ export default function Home() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Malayalam, English or Manglish…"
+            placeholder="Ask Ormma anything…"
             aria-label="Message"
           />
           <button type="submit" className="send" disabled={loading || !input.trim()}>

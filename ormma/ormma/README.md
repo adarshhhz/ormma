@@ -1,6 +1,6 @@
-# Ormma - Kerala's Own AI
+# Ormma - Your AI Assistant
 
-A simple chat app for Ormma (ഓർമ്മ), built with Next.js and OpenRouter.
+A simple glass-effect chat app for Ormma, built with Next.js and OpenRouter.
 
 ## Run locally
 

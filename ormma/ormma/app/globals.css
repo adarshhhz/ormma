@@ -100,8 +100,7 @@ body::before {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-weight: 700;
-  font-size: 1.3rem;
+  padding: 8px;
   color: #fff;
   background: linear-gradient(135deg, var(--neon), var(--neon-2));
   box-shadow: var(--glow);
@@ -169,8 +168,7 @@ body::before {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 0.85rem;
-  font-weight: 700;
+  padding: 5px;
   color: #fff;
   background: linear-gradient(135deg, var(--neon), var(--neon-2));
   box-shadow: 0 0 12px rgba(41, 182, 255, 0.6);

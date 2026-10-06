@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ormma - Kerala's Own AI",
-  description: "Ormma (ഓർമ്മ) is Kerala's own AI assistant. Ask in Malayalam, English or Manglish.",
+  title: "Ormma - Your AI Assistant",
+  description: "Ormma is a friendly AI assistant. Ask anything, any time.",
 };
 
 export const viewport: Viewport = {
@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="ml">
+    <html lang="en">
       <body>{children}</body>
     </html>
   );
